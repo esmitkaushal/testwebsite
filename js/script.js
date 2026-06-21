@@ -1,12 +1,15 @@
 function trackEvent(eventName, eventData = {}) {
   console.log("Event triggered:", eventName, eventData);
 
-  /*
-    Later, SDK event code will go here.
-
-    Example:
-    SomeSDK.trackEvent(eventName, eventData);
-  */
+  if (typeof AF === "function") {
+    AF("pba", "event", {
+      eventType: "EVENT",
+      eventName: eventName,
+      eventValue: eventData
+    });
+  } else {
+    console.warn("AppsFlyer SDK is not loaded yet.");
+  }
 }
 
 function handleRegistration(event) {
