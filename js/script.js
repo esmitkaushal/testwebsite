@@ -2,11 +2,18 @@ function trackEvent(eventName, eventData = {}) {
   console.log("Event triggered:", eventName, eventData);
 
   if (typeof AF === "function") {
-    AF("pba", "event", {
+    const afEvent = {
       eventType: "EVENT",
       eventName: eventName,
       eventValue: eventData
-    });
+    };
+
+    if (eventName === "purchase") {
+      afEvent.eventRevenue = eventData.price;
+      afEvent.eventRevenueCurrency = eventData.currency;
+    }
+
+    AF("pba", "event", afEvent);
   } else {
     console.warn("AppsFlyer SDK is not loaded yet.");
   }
@@ -18,7 +25,7 @@ function handleRegistration(event) {
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
 
-  trackEvent("registration_completed", {
+  trackEvent("complete_registration", {
     name: name,
     email: email
   });
@@ -27,7 +34,7 @@ function handleRegistration(event) {
 }
 
 function handlePurchase() {
-  trackEvent("purchase_completed", {
+  trackEvent("purchase", {
     product_name: "Test Subscription",
     price: 9.99,
     currency: "USD"
@@ -37,10 +44,8 @@ function handlePurchase() {
 }
 
 function trackPageView() {
-  const pageName = document.title;
-
-  trackEvent("page_view", {
-    page_title: pageName,
+  trackEvent("website_visit", {
+    page_title: document.title,
     page_path: window.location.pathname
   });
 }
