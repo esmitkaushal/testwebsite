@@ -22,24 +22,10 @@ function trackEvent(eventName, eventData = {}) {
 function handleRegistration(event) {
   event.preventDefault();
 
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-
-  trackEvent("complete_registration", {
-    name: name,
-    email: email
-  });
-
   window.location.href = "thank-you.html?source=registration";
 }
 
 function handlePurchase() {
-  trackEvent("purchase", {
-    product_name: "Test Subscription",
-    price: 9.99,
-    currency: "USD"
-  });
-
   window.location.href = "thank-you.html?source=purchase";
 }
 
@@ -64,9 +50,19 @@ function updateThankYouPage() {
   if (source === "registration") {
     title.innerText = "Registration completed!";
     message.innerText = "This success page was reached after a fake registration.";
+
+    trackEvent("complete_registration", {
+      registration_method: "fake_form"
+    });
   } else if (source === "purchase") {
     title.innerText = "Purchase completed!";
     message.innerText = "This success page was reached after a fake purchase.";
+
+    trackEvent("purchase", {
+      product_name: "Test Subscription",
+      price: 9.99,
+      currency: "USD"
+    });
   }
 }
 
