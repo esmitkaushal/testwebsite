@@ -22,11 +22,24 @@ function trackEvent(eventName, eventData = {}) {
 function handleRegistration(event) {
   event.preventDefault();
 
-  window.location.href = "thank-you.html?source=registration";
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+
+  trackEvent("complete_registration", {
+    registration_method: "fake_form",
+    name: name,
+    email: email
+  });
+
+  const message = document.getElementById("registrationMessage");
+
+  if (message) {
+    message.innerText = "Registration completed successfully.";
+  }
 }
 
 function handlePurchase() {
-  window.location.href = "thank-you.html?source=purchase";
+  window.location.href = "thank-you.html";
 }
 
 function trackPageView() {
@@ -37,9 +50,6 @@ function trackPageView() {
 }
 
 function updateThankYouPage() {
-  const params = new URLSearchParams(window.location.search);
-  const source = params.get("source");
-
   const title = document.getElementById("thankYouTitle");
   const message = document.getElementById("thankYouMessage");
 
@@ -47,23 +57,14 @@ function updateThankYouPage() {
     return;
   }
 
-  if (source === "registration") {
-    title.innerText = "Registration completed!";
-    message.innerText = "This success page was reached after a fake registration.";
+  title.innerText = "Purchase completed!";
+  message.innerText = "This success page was reached after a fake purchase.";
 
-    trackEvent("complete_registration", {
-      registration_method: "fake_form"
-    });
-  } else if (source === "purchase") {
-    title.innerText = "Purchase completed!";
-    message.innerText = "This success page was reached after a fake purchase.";
-
-    trackEvent("purchase", {
-      product_name: "Test Subscription",
-      price: 9.99,
-      currency: "USD"
-    });
-  }
+  trackEvent("purchase", {
+    product_name: "Test Subscription",
+    price: 9.99,
+    currency: "USD"
+  });
 }
 
 trackPageView();
